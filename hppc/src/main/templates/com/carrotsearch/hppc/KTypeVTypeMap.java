@@ -174,6 +174,53 @@ public interface KTypeVTypeMap<KType, VType> extends KTypeVTypeAssociativeContai
   public VType indexReplace(int index, VType newValue);
 
   /**
+   * Inserts a key-value pair for a key that is not present in the map. This
+   * method may help in avoiding double recalculation of the key's hash.
+   * 
+   * @see #indexOf
+   * 
+   * @param index
+   *          The index of a previously non-existing key, as returned from
+   *          {@link #indexOf}.
+   * @throws AssertionError
+   *           If assertions are enabled and the index corresponds to an
+   *           existing key.
+   */
+  public void indexInsert(int index, KType key, VType value);
+
+  /**
+   * Clear all keys and values in the container.
+   * 
+   * @see #release()
+   */
+  public void clear();
+
+  /**
+   * Removes all elements from the collection and additionally releases any
+   * internal buffers. Typically, if the object is to be reused, a simple
+   * {@link #clear()} should be a better alternative since it'll avoid
+   * reallocation.
+   * 
+   * @see #clear()
+   */
+  public void release();
+  
+  /**
+   * Visually depict the distribution of keys.
+   * 
+   * @param characters
+   *          The number of characters to "squeeze" the entire buffer into.
+   * @return Returns a sequence of characters where '.' depicts an empty
+   *         fragment of the internal buffer and 'X' depicts full or nearly full
+   *         capacity within the buffer's range and anything between 1 and 9 is between.
+   */
+  public String visualizeKeyDistribution(int characters);
+
+
+
+  //////// BEGIN http-atomic ADDITIONS
+
+  /**
    * Returns the value associated with an existing key with volatile memory semantics.
    *
    * @see #indexOf
@@ -230,47 +277,4 @@ public interface KTypeVTypeMap<KType, VType> extends KTypeVTypeAssociativeContai
    *           existing key.
    */
   public VType indexCompareAndExchange(int index, VType expectedValue, VType newValue);
-
-  /**
-   * Inserts a key-value pair for a key that is not present in the map. This
-   * method may help in avoiding double recalculation of the key's hash.
-   * 
-   * @see #indexOf
-   * 
-   * @param index
-   *          The index of a previously non-existing key, as returned from
-   *          {@link #indexOf}.
-   * @throws AssertionError
-   *           If assertions are enabled and the index corresponds to an
-   *           existing key.
-   */
-  public void indexInsert(int index, KType key, VType value);
-
-  /**
-   * Clear all keys and values in the container.
-   * 
-   * @see #release()
-   */
-  public void clear();
-
-  /**
-   * Removes all elements from the collection and additionally releases any
-   * internal buffers. Typically, if the object is to be reused, a simple
-   * {@link #clear()} should be a better alternative since it'll avoid
-   * reallocation.
-   * 
-   * @see #clear()
-   */
-  public void release();
-  
-  /**
-   * Visually depict the distribution of keys.
-   * 
-   * @param characters
-   *          The number of characters to "squeeze" the entire buffer into.
-   * @return Returns a sequence of characters where '.' depicts an empty
-   *         fragment of the internal buffer and 'X' depicts full or nearly full
-   *         capacity within the buffer's range and anything between 1 and 9 is between.
-   */
-  public String visualizeKeyDistribution(int characters);  
 }

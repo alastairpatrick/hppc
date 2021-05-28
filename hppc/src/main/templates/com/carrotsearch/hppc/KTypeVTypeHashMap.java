@@ -44,12 +44,6 @@ public class KTypeVTypeHashMap<KType, VType>
          /*! #else VType [] #end !*/ 
          values;
 
-  static final private VarHandle varHandle = MethodHandles.arrayElementVarHandle(
-          /*! #if ($TemplateOptions.VTypeGeneric) !*/
-          Object [].class
-          /*! #else VType [].class #end !*/
-  );
-
   /**
    * The number of stored keys (assigned key slots), excluding the special 
    * "empty" key, if any (use {@link #size()} instead).
@@ -539,48 +533,6 @@ public class KTypeVTypeHashMap<KType, VType>
 
       assigned++;
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public VType indexGetVolatile(int index) {
-    assert index >= 0 : "The index must point at an existing key.";
-    assert index <= mask ||
-            (index == mask + 1 && hasEmptyKey);
-
-    return (VType) varHandle.getVolatile(values, index);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void indexSetVolatile(int index, VType newValue) {
-    assert index >= 0 : "The index must point at an existing key.";
-    assert index <= mask ||
-            (index == mask + 1 && hasEmptyKey);
-
-    varHandle.setVolatile(values, index, newValue);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public VType indexReplaceVolatile(int index, VType newValue) {
-    assert index >= 0 : "The index must point at an existing key.";
-    assert index <= mask ||
-            (index == mask + 1 && hasEmptyKey);
-
-    return (VType) varHandle.getAndSet(values, index, newValue);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public VType indexCompareAndExchange(int index, VType expectedValue, VType newValue) {
-    assert index >= 0 : "The index must point at an existing key.";
-    assert index <= mask ||
-            (index == mask + 1 && hasEmptyKey);
-
-    return (VType) varHandle.compareAndExchange(values, index, expectedValue, newValue);
   }
 
   /**
@@ -1266,5 +1218,56 @@ public class KTypeVTypeHashMap<KType, VType>
   /*! #else protected #end !*/ boolean equals(Object v1, Object v2) {
     return (v1 == v2) || (v1 != null && v1.equals(v2));
   }
-  /*! #end !*/    
+  /*! #end !*/
+
+
+  //////// BEGIN http-atomic ADDITIONS
+
+  static final private VarHandle varHandle = MethodHandles.arrayElementVarHandle(
+          /*! #if ($TemplateOptions.VTypeGeneric) !*/
+          Object [].class
+          /*! #else VType [].class #end !*/
+  );
+
+  /** {@inheritDoc} */
+  @Override
+  public VType indexGetVolatile(int index) {
+    assert index >= 0 : "The index must point at an existing key.";
+    assert index <= mask ||
+            (index == mask + 1 && hasEmptyKey);
+
+    return (VType) varHandle.getVolatile(values, index);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void indexSetVolatile(int index, VType newValue) {
+    assert index >= 0 : "The index must point at an existing key.";
+    assert index <= mask ||
+            (index == mask + 1 && hasEmptyKey);
+
+    varHandle.setVolatile(values, index, newValue);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public VType indexReplaceVolatile(int index, VType newValue) {
+    assert index >= 0 : "The index must point at an existing key.";
+    assert index <= mask ||
+            (index == mask + 1 && hasEmptyKey);
+
+    return (VType) varHandle.getAndSet(values, index, newValue);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public VType indexCompareAndExchange(int index, VType expectedValue, VType newValue) {
+    assert index >= 0 : "The index must point at an existing key.";
+    assert index <= mask ||
+            (index == mask + 1 && hasEmptyKey);
+
+    return (VType) varHandle.compareAndExchange(values, index, expectedValue, newValue);
+  }
 }
