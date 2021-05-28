@@ -1258,6 +1258,13 @@ public class KTypeVTypeWormMap<KType, VType>
 
   /** {@inheritDoc} */
   @Override
+  public VType getVolatile(KType key) {
+    int index = indexOf(key);
+    return index < 0 ? noValue() : (VType) varHandle.getVolatile(values, index);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public VType indexGetVolatile(int index) {
     assert checkIndex(index, next.length);
     return (VType) varHandle.getVolatile(values, index);

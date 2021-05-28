@@ -1231,6 +1231,13 @@ public class KTypeVTypeHashMap<KType, VType>
 
   /** {@inheritDoc} */
   @Override
+  public VType getVolatile(KType key) {
+    int index = indexOf(key);
+    return index < 0 ? Intrinsics.<VType> empty() : (VType) varHandle.getVolatile(values, index);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public VType indexGetVolatile(int index) {
     assert index >= 0 : "The index must point at an existing key.";
     assert index <= mask ||

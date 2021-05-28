@@ -909,6 +909,13 @@ public class KTypeVTypeHashMapTest<KType, VType> extends AbstractKTypeTest<KType
     //////// BEGIN http-atomic ADDITIONS
 
     @Test
+    public void testGetVolatile() {
+        map.put(key1, value1);
+        assertEquals2(value1, map.getVolatile(key1));
+        assertEquals2(Intrinsics.<VType> empty(), map.getVolatile(key2));
+    }
+
+    @Test
     public void testVolatileIndexMethods()
     {
         map.put(keyE, value1);

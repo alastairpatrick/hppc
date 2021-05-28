@@ -221,6 +221,11 @@ public interface KTypeVTypeMap<KType, VType> extends KTypeVTypeAssociativeContai
   //////// BEGIN http-atomic ADDITIONS
 
   /**
+   * @return Returns the value associated with the given key with volatile memory semantics
+   */
+  public VType getVolatile(KType key);
+
+  /**
    * Returns the value associated with an existing key with volatile memory semantics.
    *
    * @see #indexOf
